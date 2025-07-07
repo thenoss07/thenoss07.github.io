@@ -1,3 +1,11 @@
+const audioClick = new Audio('assets/sfx/click-3.mp3');
+const audioFlip = new Audio('assets/sfx/Standard Whip.mp3');
+const audioSuccess = new Audio('assets/sfx/Success Sound Effect.mp3');
+const audioFail = new Audio('assets/sfx/Fail Sound Effect.mp3');
+const bgMusic = new Audio('assets/audio/bg-music-loop.mp3'); //NEED TO ADD IN BACKGROUND MUSIC//
+bgMusic.loop   = true;
+bgMusic.volume = 0.2;
+
 const scenarios = [
   {
     title: "Free Game Skins",
@@ -125,81 +133,113 @@ function startGame() {
   document.getElementById("play").classList.remove("hidden");
   document.getElementById("end").classList.add("hidden");
   document.getElementById("game").style.backgroundColor = bgColors[0];
+  bgMusic.play().catch(()=>{});   // will succeed after first user click
+
 }
 
 function showScenario() {
   const sc = scenarios[current];
 
+  // Update scenario text and avatar
   document.getElementById("scenario-title").innerText = sc.title;
   document.getElementById("scenario-text").innerText = sc.text;
   document.getElementById("avatar").src = sc.avatar;
 
-  // Update button text
-  document.getElementById("btn-safe").innerText = sc.choices[0];
-  document.getElementById("btn-risk").innerText = sc.choices[1];
+  // Update front text of each card
+  document.getElementById("safe-front").innerText = sc.choices[0];
+  document.getElementById("risk-front").innerText = sc.choices[1];
 
-  // Update background color
-  document.getElementById("game").style.backgroundColor = bgColors[current] || "#f2f2f2";
+  // Reset flip classes to unflip cards for next scenario
+  const safeWrapper = document.getElementById("safe-wrapper");
+  const riskWrapper = document.getElementById("risk-wrapper");
+  safeWrapper.classList.remove("flip");
+  riskWrapper.classList.remove("flip");
 
-  // Progress bar
-  updateProgress(current + 1, scenarios.length);
-  const safeBtn = document.getElementById("btn-safe");
-const riskBtn = document.getElementById("btn-risk");
+  // Make sure click handlers are intact (re-assign to be safe)
+  safeWrapper.onclick = () => select("safe");
+  riskWrapper.onclick = () => select("unsafe");
 
-// Reset animation classes
-safeBtn.classList.remove("delay-1");
-riskBtn.classList.remove("delay-2");
-
-// Force reflow to restart animation
-void safeBtn.offsetWidth;
-void riskBtn.offsetWidth;
-
-// Add animation delay classes
-safeBtn.classList.add("delay-1");
-riskBtn.classList.add("delay-2");
-
-}
-
-function select(choice) {
-  const sc = scenarios[current];
-  const fbText = document.getElementById("fb-text");
-  fbText.innerText = sc.feedback[choice];
-
-  const safeBtn = document.getElementById("btn-safe");
-  const riskBtn = document.getElementById("btn-risk");
-
-  // Flip both cards
-  safeBtn.classList.add("flip");
-  riskBtn.classList.add("flip");
-
-  // Mark the chosen card as correct or incorrect
-  const selectedBtn = choice === "safe" ? safeBtn : riskBtn;
-  if (choice === sc.correct) {
-    selectedBtn.classList.add("correct");
+  // Swap the order randomly by re-appending existing elements
+  const container = document.getElementById("choices-container");
+  if (Math.random() < 0.5) {
+    container.appendChild(safeWrapper);
+    container.appendChild(riskWrapper);
   } else {
-    selectedBtn.classList.add("incorrect");
+    container.appendChild(riskWrapper);
+    container.appendChild(safeWrapper);
   }
 
+  // Set background color
+  document.body.style.backgroundColor = bgColors[current] || "#f2f2f2";
+
+  // Update progress bar
+  updateProgress(current + 1, scenarios.length);
+}
+
+
+
+function select(choice) {
+  const sc       = scenarios[current];
+  const fb       = document.getElementById("fb-text");
+  const safeWrap = document.getElementById("safe-wrapper");
+  const riskWrap = document.getElementById("risk-wrapper");
+
+  /* ---------- flip only the picked card ---------- */
+  if (choice === "safe") {
+    playSound(audioFlip);
+    safeWrap.classList.add("flip");
+  } else {
+    playSound(audioFlip);
+    riskWrap.classList.add("flip");
+  }
+
+  /* ---------- feedback text & colour ---------- */
+  fb.innerText  = sc.feedback[choice];
+  fb.style.color = choice === sc.correct ? "#00d26a" : "#e74c3c";
+
+  /* ---------- success / fail sound ---------- */
+  if (choice === sc.correct) {
+    playSound(audioSuccess);
+  } else {
+    playSound(audioFail);
+  }
+
+  /* ---------- block further clicks ---------- */
+  safeWrap.onclick = null;
+  riskWrap.onclick = null;
+
+  /* ---------- reveal feedback screen ---------- */
   setTimeout(() => {
     document.getElementById("play").classList.add("hidden");
-    document.getElementById("feedback").classList.remove("hidden");
-  }, 600); // wait for flip to finish
+    const feedbackSection = document.getElementById("feedback");
+    feedbackSection.classList.remove("hidden");
+    feedbackSection.classList.add("show"); // CSS fade‑in
+  }, 700);   // same as flip duration
 }
+
+
 
 
 function next() {
-  current++;
-  if (current < scenarios.length) {
-    showScenario();
-    document.getElementById("feedback").classList.add("hidden");
-    document.getElementById("play").classList.remove("hidden");
-  } else {
-    document.getElementById("feedback").classList.add("hidden");
-    document.getElementById("end").classList.remove("hidden");
-    document.getElementById("result").innerText = "You’ve completed all 10 scenarios!";
-    document.getElementById("game").style.backgroundColor = "#ffffff";
-  }
+  const playSection = document.getElementById("play");
+  playSection.classList.add("fade-out"); // start fade out
+
+  setTimeout(() => {
+    current++;
+    if (current < scenarios.length) {
+      showScenario();
+      document.getElementById("feedback").classList.add("hidden");
+      playSection.classList.remove("fade-out");
+      document.getElementById("play").classList.remove("hidden");
+    } else {
+      document.getElementById("feedback").classList.add("hidden");
+      document.getElementById("end").classList.remove("hidden");
+      document.getElementById("result").innerText = "You’ve completed all 10 scenarios!";
+      document.body.style.backgroundColor = "#ffffff";
+    }
+  }, 500); // match transition duration
 }
+
 
 function restart() {
   location.reload();
@@ -207,5 +247,15 @@ function restart() {
 
 function updateProgress(current, total) {
   const percent = Math.floor((current / total) * 100);
-  document.getElementById("bar-fill").style.width = percent + "%";
+  const barFill = document.getElementById("bar-fill");
+  barFill.style.width = percent + "%";
+  barFill.classList.add("pulse");
+
+  setTimeout(() => {
+    barFill.classList.remove("pulse");
+  }, 1200);
+}
+function playSound(srcAudio) {
+  const sfx = srcAudio.cloneNode(); // make a fresh copy
+  sfx.play().catch(()=>{});         // silently ignore autoplay blocks
 }
