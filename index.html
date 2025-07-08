@@ -6,6 +6,7 @@
         content="width=960, height=540, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Your Stream · Interactive Story</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="game">
@@ -29,10 +30,22 @@
         </div>
       </div>
 
-      <div class="choices">
-  <button id="btn-safe" class="choice-card" onclick="select('safe')"></button>
-  <button id="btn-risk" class="choice-card" onclick="select('unsafe')"></button>
+      <div class="choices" id="choices-container">
+  <div class="card-wrapper delay-1" id="safe-wrapper" onclick="select('safe')">
+    <div class="card-inner" id="safe-inner">
+      <div class="card-front" id="safe-front"></div>
+      <div class="card-back correct" id="safe-back">✅</div>
+    </div>
+  </div>
+
+  <div class="card-wrapper delay-2" id="risk-wrapper" onclick="select('unsafe')">
+    <div class="card-inner" id="risk-inner">
+      <div class="card-front" id="risk-front"></div>
+      <div class="card-back incorrect" id="risk-back">❌</div>
+    </div>
+  </div>
 </div>
+
 
 
     </section>
