@@ -266,5 +266,3 @@ function playSound(src) {
     console.warn("Audio play failed:", e);
   });
 }
-
-//test from home computer
