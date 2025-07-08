@@ -1,8 +1,11 @@
-const audioClick = new Audio('assets/sfx/click-3.mp3');
-const audioFlip = new Audio('assets/sfx/Standard Whip.mp3');
-const audioSuccess = new Audio('assets/sfx/Success Sound Effect.mp3');
-const audioFail = new Audio('assets/sfx/Fail Sound Effect.mp3');
-const bgMusic = new Audio('assets/audio/bg-music-loop.mp3'); //NEED TO ADD IN BACKGROUND MUSIC//
+const AUDIO = {
+  click: 'assets/sfx/click-3.mp3',
+  flip: 'assets/sfx/Standard Whip.mp3',
+  success: 'assets/sfx/Success Sound Effect.mp3',
+  fail: 'assets/sfx/Fail Sound Effect.mp3',
+  bg: 'assets/audio/bg-music-loop.mp3'
+};
+
 bgMusic.loop   = true;
 bgMusic.volume = 0.2;
 
@@ -184,38 +187,39 @@ function select(choice) {
   const safeWrap = document.getElementById("safe-wrapper");
   const riskWrap = document.getElementById("risk-wrapper");
 
-  /* ---------- flip only the picked card ---------- */
+  // Flip only selected card + flip SFX
   if (choice === "safe") {
-    playSound(audioFlip);
     safeWrap.classList.add("flip");
   } else {
-    playSound(audioFlip);
     riskWrap.classList.add("flip");
   }
 
-  /* ---------- feedback text & colour ---------- */
+  playSound(AUDIO.flip); // Play flip sound
+
+  // Feedback
   fb.innerText  = sc.feedback[choice];
   fb.style.color = choice === sc.correct ? "#00d26a" : "#e74c3c";
 
-  /* ---------- success / fail sound ---------- */
-  if (choice === sc.correct) {
-    playSound(audioSuccess);
-  } else {
-    playSound(audioFail);
-  }
-
-  /* ---------- block further clicks ---------- */
+  // Disable further clicks
   safeWrap.onclick = null;
   riskWrap.onclick = null;
 
-  /* ---------- reveal feedback screen ---------- */
+  // Play correct/incorrect sound
+  if (choice === sc.correct) {
+    playSound(AUDIO.success);
+  } else {
+    playSound(AUDIO.fail);
+  }
+
+  // Show feedback after delay
   setTimeout(() => {
     document.getElementById("play").classList.add("hidden");
     const feedbackSection = document.getElementById("feedback");
     feedbackSection.classList.remove("hidden");
-    feedbackSection.classList.add("show"); // CSS fade‑in
-  }, 700);   // same as flip duration
+    feedbackSection.classList.add("show");
+  }, 700);
 }
+
 
 
 
@@ -255,7 +259,10 @@ function updateProgress(current, total) {
     barFill.classList.remove("pulse");
   }, 1200);
 }
-function playSound(srcAudio) {
-  const sfx = srcAudio.cloneNode(); // make a fresh copy
-  sfx.play().catch(()=>{});         // silently ignore autoplay blocks
+function playSound(src) {
+  const sfx = new Audio(src);
+  sfx.volume = 0.6; // adjust volume globally here
+  sfx.play().catch((e) => {
+    console.warn("Audio play failed:", e);
+  });
 }
