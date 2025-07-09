@@ -7,17 +7,25 @@
         <title>Your title here</title>
         
         <style>
-            body{
-                margin:0;
-                padding:0;
-                width:100vw;
-                height:100vh;
-                display:flex;
-                justify-content: center;
-                align-items: center;
-                background:#F0F0F0;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-                overflow:hidden;
+           body {
+             margin: 0;
+             padding: 0;
+             width: 100vw;
+             height: 100vh;
+              display: flex;
+              justify-content: center;
+             align-items: center;
+             font-family: Verdana, Geneva, Tahoma, sans-serif;
+             overflow: hidden;
+              background: linear-gradient(-45deg, #1f005c, #5b0060, #000c40, #002b36);
+              background-size: 400% 400%;
+              animation: gradientBG 20s ease infinite;
+            }
+
+            @keyframes gradientBG {
+             0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
             }
             #overlay{
                 background:rgba(0,0,0,0.6);
@@ -34,14 +42,15 @@
                 color: whitesmoke;
             }
             
-            iframe{
-                width: 960px;
-                height: 540px;
-                aspect-ratio: 16/9;
-                border:none;
-                background-color: aliceblue;
-                overflow:hidden;
-            }
+            iframe {
+             width: 960px;
+              height: 540px;
+              aspect-ratio: 16/9;
+              border: none;
+              border-radius: 10px;
+              box-shadow: 0 0 30px rgba(0, 255, 255, 0.25), 0 0 60px rgba(0, 128, 255, 0.15);
+                }
+
 
              @media only screen 
             and (min-device-width: 375px) 
@@ -68,5 +77,5 @@
        </svg><h1>Please rotate your screen</h1></div></div>
        <!-- rename your homepage or update the src below --> 
        <div id="container"><iframe src="game.html"></iframe></div>
-    
+     <div id="glitch-overlay"></div>
 </body></html>

@@ -10,11 +10,31 @@
 </head>
 <body>
   <div id="game">
-    <section id="start" class="card">
-      <h1>Your Stream, Your Story</h1>
-      <p>Can you make the right choices to stay safe online?</p>
-      <button class="primary" onclick="startGame()">Start</button>
-    </section>
+  <section id="start" class="card start-screen">
+  <div class="overlay"></div>
+
+  <h1 class="glitch-title" data-text="Stream Starting Soon">Stream Starting Soon</h1>
+  <p id="subtitle">Get ready to make the right choices.</p>
+
+  <!-- START SCREEN LOADING BAR -->
+<div id="start-loading-bar-container" class="hidden">
+  <div id="start-loading-bar"></div>
+</div>
+
+  <input 
+    type="text" 
+    id="username" 
+    placeholder="Enter your username" 
+    autocomplete="off"
+    maxlength="15"
+    spellcheck="false"
+  />
+  <button class="primary" id="start-btn" disabled>Enter</button>
+</section>
+
+</div>
+
+
 
     <section id="play" class="card hidden">
       <header>

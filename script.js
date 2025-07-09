@@ -1,15 +1,15 @@
 const AUDIO = {
-  click: 'assets/sfx/click-3.mp3',
-  flip: 'assets/sfx/Standard Whip.mp3',
-  success: 'assets/sfx/Success Sound Effect.mp3',
-  fail: 'assets/sfx/Fail Sound Effect.mp3',
-  bg: 'assets/bg music/Future Design'
+  click: 'click-3.mp3',
+  flip: 'Standard Whip.mp3',
+  success: 'Success Sound Effect.mp3',
+  fail: 'Fail Sound Effect.mp3',
+  bg: 'Future Design.mp3'
 };
 
 // ✅ Declare bgMusic globally and configure
 const bgMusic = new Audio(AUDIO.bg);
 bgMusic.loop = true;
-bgMusic.volume = 0.2;
+bgMusic.volume = 0.02;
 
 const bgColors = [
   "#fef9c3", "#d1fae5", "#e0f2fe", "#fce7f3", "#ede9fe",
@@ -130,6 +130,59 @@ const scenarios = [
     }
   }
 ];
+// Wait for DOM content to load
+document.addEventListener("DOMContentLoaded", () => {
+  const usernameInput = document.getElementById("username");
+  const startBtn = document.getElementById("start-btn");
+
+  // Enable button only if username is non-empty (trimmed)
+  usernameInput.addEventListener("input", () => {
+    startBtn.disabled = usernameInput.value.trim().length === 0;
+  });
+
+  // When button clicked, save username and start game
+  startBtn.addEventListener("click", () => {
+    const username = usernameInput.value.trim();
+    if (username === "") return;
+
+    window.playerName = username;
+
+    // Disable input and button during loading
+    usernameInput.disabled = true;
+    startBtn.disabled = true;
+    startBtn.innerText = "Starting...";
+
+    const loadingBarContainer = document.getElementById("start-loading-bar-container");
+    const loadingBar = document.getElementById("start-loading-bar");
+
+    loadingBarContainer.classList.remove("hidden");
+    loadingBarContainer.classList.add("show");
+
+    loadingBar.style.width = "0%";
+
+    // Start loading only *after* clicking Enter
+    setTimeout(() => {
+      loadingBar.style.width = "100%";
+    }, 100); // short delay before animation starts
+
+    // Then wait 3.5s before starting the game
+    setTimeout(() => {
+      startGame();
+    }, 3600);
+  });
+
+  // Try to autoplay background music on page load
+  bgMusic.play().catch(() => {
+    // If autoplay blocked, play on first user interaction
+    function playBgMusic() {
+      bgMusic.play().catch(() => {});
+      window.removeEventListener("click", playBgMusic);
+      window.removeEventListener("keydown", playBgMusic);
+    }
+    window.addEventListener("click", playBgMusic);
+    window.addEventListener("keydown", playBgMusic);
+  });
+});
 
 function startGame() {
   current = 0;
@@ -139,7 +192,13 @@ function startGame() {
   document.getElementById("end").classList.add("hidden");
   document.getElementById("game").style.backgroundColor = bgColors[0];
   bgMusic.play().catch(() => {}); // safe autoplay fallback
+
+  if(window.playerName) {
+    console.log(`Welcome, ${window.playerName}!`);
+    // You can add a greeting in your UI if you want
+  }
 }
+
 
 function showScenario() {
   const sc = scenarios[current];
@@ -251,3 +310,18 @@ function playSound(src) {
     console.warn("Audio play failed:", e);
   });
 }
+function startLoadingBar() {
+  document.getElementById("start-btn").addEventListener("click", () => {
+  const container = document.getElementById("loading-bar-container");
+  const bar = document.getElementById("loading-bar");
+
+  container.classList.add("show");    // fade it in
+  bar.style.width = "100%";           // animate fill
+
+  // Optional: transition to the next screen after it loads
+  setTimeout(() => {
+    startGame(); // or whatever function you use to begin
+  }, 3000); // match transition duration
+});
+}
+

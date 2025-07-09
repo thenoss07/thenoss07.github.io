@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loading Bar Test</title>
+<style>
+  #start-loading-bar-container {
+    width: 80%;
+    height: 12px;
+    background: #222;
+    border-radius: 6px;
+    margin: 20px auto;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease;
+  }
+
+  #start-loading-bar-container.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #start-loading-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, #00d26a, #1e90ff);
+    transition: width 3s ease-in-out;
+  }
+
+  #start-btn {
+    display: block;
+    margin: 40px auto;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+  }
+</style>
+</head>
+<body>
+
+<input type="text" id="username" placeholder="Enter your name" style="display:block; margin:20px auto; padding:8px; font-size:1rem;"/>
+<button id="start-btn" disabled>Start Game</button>
+
+<div id="start-loading-bar-container">
+  <div id="start-loading-bar"></div>
+</div>
+
+<script>
+  const usernameInput = document.getElementById("username");
+  const startBtn = document.getElementById("start-btn");
+  const loadingBarContainer = document.getElementById("start-loading-bar-container");
+  const loadingBar = document.getElementById("start-loading-bar");
+
+  usernameInput.addEventListener("input", () => {
+    startBtn.disabled = usernameInput.value.trim().length === 0;
+  });
+
+  startBtn.addEventListener("click", () => {
+    startBtn.disabled = true;
+    usernameInput.disabled = true;
+    startBtn.innerText = "Starting...";
+
+    // Show loading bar container
+    loadingBarContainer.classList.add("show");
+    // Reset bar width to 0 before animation
+    loadingBar.style.width = "0%";
+
+    // Animate to 100% after 100ms
+    setTimeout(() => {
+      loadingBar.style.width = "100%";
+    }, 100);
+
+    // Start the game after 3.5 seconds
+    setTimeout(() => {
+      alert("Game started!"); // Replace with your startGame() call
+    }, 3600);
+  });
+</script>
+
+</body>
+</html>
