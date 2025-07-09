@@ -3,7 +3,7 @@ const AUDIO = {
   flip: 'assets/sfx/Standard Whip.mp3',
   success: 'assets/sfx/Success Sound Effect.mp3',
   fail: 'assets/sfx/Fail Sound Effect.mp3',
-  bg: 'assets/audio/bg-music-loop.mp3'
+  bg: 'assets/bg music/Future Design'
 };
 
 // ✅ Declare bgMusic globally and configure
@@ -18,7 +18,118 @@ const bgColors = [
 
 let current = 0;
 
-const scenarios = [/* your scenarios (unchanged) */];
+const scenarios = [
+  {
+    title: "Free Game Skins",
+    text: "A pop-up site says 'Login with IG to claim exclusive skins'.",
+    avatar: "assets/avatar1.png",
+    correct: "safe",
+    choices: ["Close tab", "Login & claim"],
+    feedback: {
+      safe: "✅ This is a scam tactic. Never log in through unfamiliar links.",
+      unsafe: "⚠️ Logging in can expose your account to theft."
+    }
+  },
+  {
+    title: "AI Friend on Discord",
+    text: "Someone using an AI-generated profile starts chatting with you. They want to VC immediately.",
+    avatar: "assets/avatar2.png",
+    correct: "safe",
+    choices: ["Ignore and report", "Join voice call"],
+    feedback: {
+      safe: "✅ Stay cautious. AI-generated personas can be used to trick you.",
+      unsafe: "⚠️ Voice chats can be used to gather info or groom victims."
+    }
+  },
+  {
+    title: "Deepfake Video",
+    text: "You see a video of your teacher saying something weird. Your friend DMs it to you.",
+    avatar: "assets/avatar3.png",
+    correct: "safe",
+    choices: ["Verify before sharing", "Forward to your friends"],
+    feedback: {
+      safe: "✅ Deepfakes can be highly convincing. Don’t spread unverified content.",
+      unsafe: "⚠️ Sharing it makes you part of the harm. Verify before reposting."
+    }
+  },
+  {
+    title: "Too Good to Be True",
+    text: "Someone online offers you $50 for rating their game — just click a link.",
+    avatar: "assets/avatar4.png",
+    correct: "safe",
+    choices: ["Block and report", "Click the link"],
+    feedback: {
+      safe: "✅ This is a phishing trap. Easy money promises are rarely safe.",
+      unsafe: "⚠️ These links often install malware or steal info."
+    }
+  },
+  {
+    title: "AI 'Fan Edit'",
+    text: "A viral edit shows a classmate in an inappropriate video. It looks AI-generated.",
+    avatar: "assets/avatar5.png",
+    correct: "safe",
+    choices: ["Report the post", "Comment and share"],
+    feedback: {
+      safe: "✅ AI can be misused to defame others. Report it.",
+      unsafe: "⚠️ Spreading this is image abuse, even if fake."
+    }
+  },
+  {
+    title: "Fake Contest DM",
+    text: "You get a DM saying you've won a phone — just share your home address.",
+    avatar: "assets/avatar6.png",
+    correct: "safe",
+    choices: ["Delete the message", "Send your address"],
+    feedback: {
+      safe: "✅ Real contests don’t randomly DM winners. Be skeptical.",
+      unsafe: "⚠️ Sharing your address can lead to doxxing or worse."
+    }
+  },
+  {
+    title: "Emotional AI Stranger",
+    text: "An AI chatbot pretending to be a teen opens up about feeling alone and wants to vent.",
+    avatar: "assets/avatar7.png",
+    correct: "safe",
+    choices: ["Suggest talking to a helpline", "Comfort them privately"],
+    feedback: {
+      safe: "✅ AI can simulate emotions to earn your trust. Set boundaries.",
+      unsafe: "⚠️ This may be manipulation to gain emotional control over you."
+    }
+  },
+  {
+    title: "Face Swap Scam",
+    text: "A video shows your friend advertising a crypto scheme. Their face looks off.",
+    avatar: "assets/avatar8.png",
+    correct: "safe",
+    choices: ["Call your friend to check", "Buy into the promo"],
+    feedback: {
+      safe: "✅ It’s likely a face-swap scam. Tell them directly before believing it.",
+      unsafe: "⚠️ Deepfakes are used to trick even close friends."
+    }
+  },
+  {
+    title: "Online Secret Keeper",
+    text: "A stranger says they know your secrets and asks you not to tell anyone.",
+    avatar: "assets/avatar9.png",
+    correct: "safe",
+    choices: ["Tell a trusted adult", "Keep the secret"],
+    feedback: {
+      safe: "✅ Secrets used online are often a grooming tactic. Tell someone you trust.",
+      unsafe: "⚠️ This could spiral into blackmail or manipulation."
+    }
+  },
+  {
+    title: "Fake Authority",
+    text: "A message claims to be from your school’s IT dept asking for your password.",
+    avatar: "assets/avatar10.png",
+    correct: "safe",
+    choices: ["Ignore and report", "Send your password"],
+    feedback: {
+      safe: "✅ Real institutions never ask for passwords via message.",
+      unsafe: "⚠️ This is a phishing attack using impersonation."
+    }
+  }
+];
 
 function startGame() {
   current = 0;
