@@ -259,19 +259,19 @@ html, body {
 .stream-room-bg {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #9aeaff, #87ceeb 50%, #f7f7f7 100%);
+  background: linear-gradient(to bottom, #9daec1, #d4d8e1);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
+  padding: 0 20px;
   box-sizing: border-box;
-  min-height: 100%;
 }
 
 /* Table/Desk */
 .desk {
-  width: 90%;
+  width: 100%;
   height: 60px;
   background: repeating-linear-gradient(
     -45deg,
@@ -281,12 +281,9 @@ html, body {
     #c38b5f 20px
   );
   border-top: 6px solid #9b643d;
-  box-shadow: inset 0 6px #704830;
   border-radius: 0 0 12px 12px;
-  z-index: 1;
-  margin-bottom: 10px;
+  z-index: 2;
 }
-
 /* Monitor container */
 .monitor-wrapper {
   display: flex;
@@ -299,18 +296,18 @@ html, body {
 /* Monitors */
 .monitor {
   width: 300px;
-  height: 200px;
+  height: 180px;
   border: 6px solid #333;
-  border-radius: 12px;
-  background: #111;
+  background: #000;
+  color: #0ff;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0ff;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.75rem;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
+  position: relative;
+  z-index: 3;
 }
 
 #left-monitor {
@@ -443,3 +440,35 @@ html, body {
   bottom: 0;
   border-top: 10px solid #006400;
 }
+.background-items {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Bed */
+.bed {
+  width: 100px;
+  height: 60px;
+  background: #b37070;
+  border: 3px solid #7b4a4a;
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  border-radius: 8px;
+}
+/* Bookshelf */
+.bookshelf {
+  width: 80px;
+  height: 120px;
+  background: #deb887;
+  border: 3px solid #8b5a2b;
+  position: absolute;
+  top: 40px;
+  right: 30px;
+  border-radius: 6px;
+}
+
