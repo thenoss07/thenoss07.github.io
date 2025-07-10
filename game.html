@@ -10,31 +10,61 @@
 </head>
 <body>
   <div id="game">
-  <section id="start" class="card start-screen">
-  <div class="overlay"></div>
 
-  <h1 class="glitch-title" data-text="Stream Starting Soon">Stream Starting Soon</h1>
-  <p id="subtitle">Get ready to make the right choices.</p>
+    <section id="start" class="card start-screen">
+      <div class="overlay"></div>
+      <h1 class="glitch-title" data-text="Stream Starting Soon">Stream Starting Soon</h1>
+      <p id="subtitle">Get ready to make the right choices.</p>
 
-  <!-- START SCREEN LOADING BAR -->
-<div id="start-loading-bar-container" class="hidden">
-  <div id="start-loading-bar"></div>
-</div>
+      <!-- START SCREEN LOADING BAR -->
+      <div id="start-loading-bar-container" class="hidden">
+        <div id="start-loading-bar"></div>
+      </div>
 
-  <input 
-    type="text" 
-    id="username" 
-    placeholder="Enter your username" 
-    autocomplete="off"
-    maxlength="15"
-    spellcheck="false"
-  />
-  <button class="primary" id="start-btn" disabled>Enter</button>
-</section>
-</div>
-
-
+      <input 
+        type="text" 
+        id="username" 
+        placeholder="Enter your username" 
+        autocomplete="off"
+        maxlength="15"
+        spellcheck="false"
+      />
+      <button class="primary" id="start-btn" disabled>Enter</button>
     </section>
+
+<section id="streamer-setup" class="hidden">
+  <div class="stream-room-bg">
+    <div class="desk"></div>
+
+    <div class="monitor-wrapper">
+      <!-- LEFT: OBS -->
+      <div class="monitor obs-monitor">
+        <div class="obs-header">OBS Studio</div>
+        <div class="obs-main-screen">
+          <p>Streaming Dashboard</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: GAME -->
+<div class="monitor" id="right-monitor">
+  <div class="flappy-mockup">
+    <div class="sky"></div>
+    <div class="pipe top"></div>
+    <div class="pipe bottom"></div>
+    <div class="bird"></div>
+  </div>
+</div>
+
+
+    <!-- MOUSEPAD -->
+    <div class="mousepad"></div>
+  </div>
+
+  <div id="scenario-popup" class="popup hidden">
+    Welcome to your streamer setup! Get ready to face your first challenge.
+  </div>
+</section>
+
   </div>
 </body>
 </html>

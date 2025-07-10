@@ -16,8 +16,10 @@ body {
 html, body {
   width: 960px;
   height: 540px;
-  font-family: 'Segoe UI', sans-serif;
-  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+  background: #222;
+  overflow: hidden;
 }
 
 /* Main container */
@@ -235,4 +237,209 @@ html, body {
   60%  { opacity: 0.05; transform: translate(-1px, 1px); }
   80%  { opacity: 0.03; transform: translate(1px, 0); }
   100% { opacity: 0.02; transform: translate(0, 0); }
+}
+.stream-room {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  background: #111;
+  padding: 30px;
+}
+
+@keyframes fadeInPopup {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.hidden {
+  display: none !important;
+}
+/* === SCENE 2: Streamer Room Setup === */
+.stream-room-bg {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #9aeaff, #87ceeb 50%, #f7f7f7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+/* Table/Desk */
+.desk {
+  width: 90%;
+  height: 60px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #d8a763,
+    #d8a763 10px,
+    #c38b5f 10px,
+    #c38b5f 20px
+  );
+  border-top: 6px solid #9b643d;
+  box-shadow: inset 0 6px #704830;
+  border-radius: 0 0 12px 12px;
+  z-index: 1;
+  margin-bottom: 10px;
+}
+
+/* Monitor container */
+.monitor-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  z-index: 2;
+}
+
+/* Monitors */
+.monitor {
+  width: 300px;
+  height: 200px;
+  border: 6px solid #333;
+  border-radius: 12px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0ff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+#left-monitor {
+  background: #1e1e1e;
+  flex-direction: column;
+  color: #fff;
+}
+
+
+/* OBS Monitor styling */
+.obs-monitor {
+  background: #111;
+  border-color: #33ffcc;
+  box-shadow: 0 0 12px #33ffcc inset;
+}
+
+.obs-header {
+  background: #0f0f0f;
+  padding: 4px 8px;
+  font-size: 0.6rem;
+  color: #33ffcc;
+  border-bottom: 1px solid #444;
+}
+
+.obs-main-screen {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  color: #0ff;
+  text-align: center;
+  padding: 8px;
+}
+
+/* Game Monitor */
+.game-monitor {
+  border-color: #00aaff;
+  box-shadow: 0 0 12px #00aaff inset;
+  background: #000;
+}
+
+.game-screen-text {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #00aaff;
+  font-size: 0.9rem;
+  text-shadow: 0 0 6px #00ccff;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Mousepad */
+.mousepad {
+  width: 100px;
+  height: 40px;
+  background: #444;
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px #222;
+  margin-top: -20px;
+  z-index: 3;
+}
+
+/* Popup */
+.popup {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #0ff;
+  padding: 14px 20px;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  box-shadow: 0 0 12px #0ff;
+  animation: fadeInPopup 0.5s ease-out;
+  max-width: 80%;
+  z-index: 999;
+}
+#scenario-popup.popup {
+  z-index: 9999 !important;
+}
+#streamer-setup {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.flappy-mockup {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(to bottom, #87ceeb, #b0e0e6);
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Bird */
+.bird {
+  width: 30px;
+  height: 30px;
+  background: yellow;
+  border-radius: 50%;
+  position: absolute;
+  left: 40px;
+  top: 40%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Pipes */
+.pipe {
+  width: 40px;
+  background: #228B22;
+  position: absolute;
+  left: 140px;
+}
+
+.pipe.top {
+  height: 120px;
+  top: 0;
+  border-bottom: 10px solid #006400;
+}
+
+.pipe.bottom {
+  height: 160px;
+  bottom: 0;
+  border-top: 10px solid #006400;
 }

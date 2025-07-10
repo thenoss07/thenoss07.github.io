@@ -51,10 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
       loadingBar.style.width = "100%";
     }, 100); // short delay before animation starts
 
-    // Then wait 3.5s before starting the game
+    // Wait 3.5s, then show streamer setup first
     setTimeout(() => {
-      startGame();
-    }, 3600);
+    showStreamerSetup("Starting stream...", () => {
+    startGame(); // This triggers the first scenario or whatever comes next
+  });
+}, 3600);
   });
 
   // Try to autoplay background music on page load
@@ -91,4 +93,20 @@ function startLoadingBar() {
   }, 3000); // match transition duration
 });
 }
+
+function showStreamerSetup(message, callback) {
+  document.getElementById('start').classList.add('hidden');
+  const setupSection = document.getElementById('streamer-setup');
+  setupSection.classList.remove('hidden');
+
+  const popup = document.getElementById('scenario-popup');
+  popup.classList.remove('hidden');
+  popup.innerText = message || "Welcome! You are a streamer.";
+showStreamerSetup("Welcome to your streamer setup! Get ready to face your first challenge.", () => {
+  // ready for next scenario
+});
+
+  callback(); // Continue to next game logic after showing setup
+}
+
 
