@@ -99,25 +99,107 @@ function showStreamerSetup(message, callback) {
   document.getElementById('streamer-setup').classList.remove('hidden');
 
   const popup = document.getElementById('scenario-popup');
-  popup.classList.add('hidden'); // Make sure it's hidden initially
-  popup.classList.add('show');   // Animation class, always present
+  popup.classList.add('hidden'); // Hide initially
+  popup.classList.add('show');   // Always include animation class
 
   setTimeout(() => {
-    popup.classList.remove('hidden'); // Show after 5s
+    popup.classList.remove('hidden');           // Show after 3s
+    popup.classList.add('clickable-popup');     // Show arrow
     popup.innerText = "Welcome to your streamer setup!";
 
     let clickCount = 0;
-    popup.addEventListener('click', () => {
+    popup.addEventListener('click', function handleClick() {
       clickCount++;
       if (clickCount === 1) {
         popup.innerText = "Be careful of who you encounter online… stay safe out there!!";
       } else if (clickCount === 2) {
-        popup.classList.add('hidden'); // Hide popup
-        callback(); // Transition to next scene
+        popup.classList.remove('clickable-popup'); // Remove arrow
+        popup.classList.add('hidden');             // Hide popup
+        popup.removeEventListener('click', handleClick); // Cleanup
+        showScene3(); // ✅ Start Scene 3 here
       }
     });
-  }, 5000); // Delay before showing popup
+  }, 3000); // 3-second delay after entering scene
 }
 
+function showScene3() {
+  const popup = document.getElementById('scenario-popup');
+  const setupScreen = document.getElementById('streamer-setup');
 
+  // Hide other elements, reset popup
+  popup.innerText = "";
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+
+  // Step 1: Show context + problem
+  popup.innerText = "After a great stream, you get a DM from someone claiming to be from 'Redwolf Gaming'...";
+  
+  let clickCount = 0;
+
+  popup.onclick = () => {
+    clickCount++;
+
+    if (clickCount === 1) {
+      popup.innerText = "They offer you $300 to promote their new game and send a link to ‘sign the collab form.’ What do you do?";
+    }
+
+    else if (clickCount === 2) {
+      popup.classList.add('hidden');
+      popup.classList.remove('clickable-popup');
+      showChoicesForScene3();
+    }
+  };
+}
+function showChoicesForScene3() {
+  const setupScreen = document.getElementById('streamer-setup');
+
+  // Clear any previous buttons
+  const oldBtns = document.querySelectorAll('.choice-btn');
+  oldBtns.forEach(btn => btn.remove());
+
+  const choices = [
+    {
+      text: "Click the link to fill in your info",
+      outcome: "❌ The form looked official, but later your stream auto-ended. Password? Changed.\n\n“Damn. That was a phishing link. Gotta be more careful.”"
+    },
+    {
+      text: "Reply asking them to email you instead",
+      outcome: "🟡 They reply from a random Gmail with typos. Sus.\n\n“Brands usually use official emails. This smells fishy.”"
+    },
+    {
+      text: "Block and report the account",
+      outcome: "✅ You blocked them and warned your viewers.\n\n“Good call. Sponsors go through proper platforms.”"
+    }
+  ];
+
+  choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.classList.add('choice-btn');
+    btn.innerText = choice.text;
+    btn.onclick = () => {
+      showOutcome(choice.outcome, showScene4); // When done, go to Scene 4
+    };
+    setupScreen.appendChild(btn);
+  });
+}
+function showOutcome(text, nextSceneCallback) {
+  const popup = document.getElementById('scenario-popup');
+
+  popup.innerText = text;
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+
+  // Remove choice buttons after selection
+  document.querySelectorAll('.choice-btn').forEach(btn => btn.remove());
+
+  let clicked = false;
+  popup.onclick = () => {
+    if (!clicked) {
+      clicked = true;
+      popup.classList.add('hidden');
+      popup.classList.remove('clickable-popup');
+      nextSceneCallback();
+    }
+  };
+}
 

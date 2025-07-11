@@ -584,3 +584,36 @@ html, body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+.clickable-popup::after {
+  content: "▼";
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1rem;
+  color: #0ff;
+  opacity: 0.8;
+  animation: arrowBounce 1s infinite;
+}
+
+@keyframes arrowBounce {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(3px); }
+  100% { transform: translateY(0); }
+}
+.choice-btn {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-family: 'VT323', monospace;
+  background: #0ff;
+  border: none;
+  border-radius: 10px;
+  margin: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: 0 0 8px #0ff;
+}
+.choice-btn:hover {
+  background: #08c;
+  color: white;
+  box-shadow: 0 0 12px #08c;
+}
