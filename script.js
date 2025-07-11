@@ -96,17 +96,28 @@ function startLoadingBar() {
 
 function showStreamerSetup(message, callback) {
   document.getElementById('start').classList.add('hidden');
-  const setupSection = document.getElementById('streamer-setup');
-  setupSection.classList.remove('hidden');
+  document.getElementById('streamer-setup').classList.remove('hidden');
 
   const popup = document.getElementById('scenario-popup');
-  popup.classList.remove('hidden');
-  popup.innerText = message || "Welcome! You are a streamer.";
-showStreamerSetup("Welcome to your streamer setup! Get ready to face your first challenge.", () => {
-  // ready for next scenario
-});
+  popup.classList.add('hidden'); // Make sure it's hidden initially
+  popup.classList.add('show');   // Animation class, always present
 
-  callback(); // Continue to next game logic after showing setup
+  setTimeout(() => {
+    popup.classList.remove('hidden'); // Show after 5s
+    popup.innerText = "Welcome to your streamer setup!";
+
+    let clickCount = 0;
+    popup.addEventListener('click', () => {
+      clickCount++;
+      if (clickCount === 1) {
+        popup.innerText = "Be careful of who you encounter online… stay safe out there!!";
+      } else if (clickCount === 2) {
+        popup.classList.add('hidden'); // Hide popup
+        callback(); // Transition to next scene
+      }
+    });
+  }, 5000); // Delay before showing popup
 }
+
 
 
