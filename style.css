@@ -380,22 +380,28 @@ html, body {
 /* Popup */
 .popup {
   position: absolute;
-  top: 20px;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
-  background: #222;
-  color: #0ff;
-  padding: 16px 24px;
-  border: 2px solid #0ff;
-  border-radius: 8px;
+  max-width: 700px;
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #00ffff;
   font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  box-shadow: 0 0 12px #0ff;
-  animation: fadeInPopup 0.5s ease-out;
-  max-width: 80%;
-  z-index: 999;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+  font-size: 20px;
+  border: 2px solid #00ffff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #00ffff;
+  z-index: 10;
+  display: none;
+  text-align: left;
+  white-space: pre-line;
+  line-height: 1.5;
+  white-space: pre-wrap; /* preserve spaces + wrap */
+  letter-spacing: 0.5px; /* optional tweak */
+}
+.popup.show {
+  display: block;
 }
 .popup:hover {
   transform: translateX(-50%) scale(1.03);
@@ -584,15 +590,23 @@ html, body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-.clickable-popup::after {
+
+.popup.clickable-popup::after {
   content: "▼";
   position: absolute;
-  bottom: 8px;
+  bottom: 6px;
   right: 12px;
-  font-size: 1rem;
-  color: #0ff;
-  opacity: 0.8;
-  animation: arrowBounce 1s infinite;
+  font-size: 14px;
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+.clickable-popup {
+  cursor: pointer;
+  position: relative;
 }
 
 @keyframes arrowBounce {
@@ -601,19 +615,40 @@ html, body {
   100% { transform: translateY(0); }
 }
 .choice-btn {
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-family: 'VT323', monospace;
-  background: #0ff;
+  font-size: 18px;
+  padding: 16px 24px;
   border: none;
   border-radius: 10px;
-  margin: 12px;
+  background-color: #ffd966;
+  color: #222;
+  font-family: 'VT323', monospace;
   cursor: pointer;
-  transition: background 0.3s ease;
-  box-shadow: 0 0 8px #0ff;
+  box-shadow: 0 4px #c49b00;
+  transition: transform 0.1s ease;
+  min-width: 200px;
+  max-width: 250px;
+  text-align: center;
+  line-height: 1.4;
 }
+
 .choice-btn:hover {
-  background: #08c;
-  color: white;
-  box-shadow: 0 0 12px #08c;
+  transform: scale(1.05);
+  background-color: #ffe98a;
+}
+
+.choice-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#scenario-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }

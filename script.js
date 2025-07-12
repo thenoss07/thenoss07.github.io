@@ -99,27 +99,31 @@ function showStreamerSetup(message, callback) {
   document.getElementById('streamer-setup').classList.remove('hidden');
 
   const popup = document.getElementById('scenario-popup');
-  popup.classList.add('hidden'); // Hide initially
-  popup.classList.add('show');   // Always include animation class
+  popup.classList.add('hidden');
+  popup.classList.add('show');
 
   setTimeout(() => {
-    popup.classList.remove('hidden');           // Show after 3s
-    popup.classList.add('clickable-popup');     // Show arrow
-    popup.innerText = "Welcome to your streamer setup!";
+    popup.classList.remove('hidden');
+    popup.classList.add('clickable-popup');
 
     let clickCount = 0;
-    popup.addEventListener('click', function handleClick() {
+
+    typeText(popup, "Welcome to your streamer setup!");
+
+    popup.onclick = function handleClick() {
+      if (popup.style.pointerEvents === "none") return; // Guard against early clicks
+
       clickCount++;
       if (clickCount === 1) {
-        popup.innerText = "Be careful of who you encounter online… stay safe out there!!";
+        typeText(popup, "Be careful of who you encounter online… stay safe out there!!");
       } else if (clickCount === 2) {
-        popup.classList.remove('clickable-popup'); // Remove arrow
-        popup.classList.add('hidden');             // Hide popup
-        popup.removeEventListener('click', handleClick); // Cleanup
-        showScene3(); // ✅ Start Scene 3 here
+        popup.classList.remove('clickable-popup');
+        popup.classList.add('hidden');
+        popup.removeEventListener('click', handleClick);
+        showScene3();
       }
-    });
-  }, 3000); // 3-second delay after entering scene
+    };
+  }, 3000);
 }
 
 function showScene3() {
@@ -132,7 +136,7 @@ function showScene3() {
   popup.classList.add('clickable-popup');
 
   // Step 1: Show context + problem
-  popup.innerText = "After a great stream, you get a DM from someone claiming to be from 'Redwolf Gaming'...";
+ typeText(popup, "After a great stream, you get a DM from someone claiming to be from 'Redwolf Gaming'...");
   
   let clickCount = 0;
 
@@ -140,22 +144,21 @@ function showScene3() {
     clickCount++;
 
     if (clickCount === 1) {
-      popup.innerText = "They offer you $300 to promote their new game and send a link to ‘sign the collab form.’ What do you do?";
+      typeText(popup, "They offer you $300 to promote their new game and send a link to ‘sign the collab form.’ What do you do?");
     }
 
     else if (clickCount === 2) {
-      popup.classList.add('hidden');
-      popup.classList.remove('clickable-popup');
-      showChoicesForScene3();
+  // 👇 Do NOT hide popup — let question stay on screen
+  popup.classList.remove('clickable-popup');
+  popup.onclick = null; // remove further clicks
+  showChoicesForScene3();
     }
   };
 }
 function showChoicesForScene3() {
-  const setupScreen = document.getElementById('streamer-setup');
-
-  // Clear any previous buttons
-  const oldBtns = document.querySelectorAll('.choice-btn');
-  oldBtns.forEach(btn => btn.remove());
+  const buttonsContainer = document.getElementById('scenario-buttons');
+  buttonsContainer.innerHTML = ''; // Clear old buttons
+  buttonsContainer.classList.remove('hidden');
 
   const choices = [
     {
@@ -175,19 +178,30 @@ function showChoicesForScene3() {
   choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.classList.add('choice-btn');
-    btn.innerText = choice.text;
-    btn.onclick = () => {
-      showOutcome(choice.outcome, showScene4); // When done, go to Scene 4
-    };
-    setupScreen.appendChild(btn);
+    btn.disabled = true; // Disable while typing
+    buttonsContainer.appendChild(btn);
+
+    // Typing animation for button text
+    typeText(btn, choice.text, 25, () => {
+      btn.disabled = false;
+      btn.onclick = () => {
+        buttonsContainer.classList.add('hidden'); // Hide buttons after choosing
+        showOutcome(choice.outcome, showScene4); // Next scene
+      };
+    });
   });
 }
+
+
 function showOutcome(text, nextSceneCallback) {
   const popup = document.getElementById('scenario-popup');
 
-  popup.innerText = text;
+  typeText(popup, text);
   popup.classList.remove('hidden');
   popup.classList.add('clickable-popup');
+
+    // Remove previous event listeners by resetting onclick
+  popup.onclick = null;
 
   // Remove choice buttons after selection
   document.querySelectorAll('.choice-btn').forEach(btn => btn.remove());
@@ -201,5 +215,43 @@ function showOutcome(text, nextSceneCallback) {
       nextSceneCallback();
     }
   };
+}
+function showScene4() {
+  alert("Scene 4 coming soon!");
+}
+
+function typeText(element, text, speed = 30, callback) {
+  let index = 0;
+  let buffer = "";
+
+  element.style.pointerEvents = "none"; // Disable clicking while typing
+
+  function type() {
+    if (index < text.length) {
+      buffer += text.charAt(index);
+      element.textContent = buffer; // Use textContent to preserve spacing correctly
+      index++;
+      setTimeout(type, speed);
+    } else {
+      element.style.pointerEvents = "auto"; // Re-enable after typing
+      if (callback) callback();
+    }
+  }
+
+  type();
+}
+function showPopupWithTyping(text, callback) {
+  const popup = document.getElementById('scenario-popup');
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+
+  popup.onclick = null; // Clear existing click behavior
+  typeText(popup, text, 30, () => {
+    popup.onclick = () => {
+      popup.classList.add('hidden');
+      popup.classList.remove('clickable-popup');
+      if (callback) callback();
+    };
+  });
 }
 
