@@ -406,8 +406,9 @@ html, body {
 .popup:hover {
   transform: translateX(-50%) scale(1.03);
 }
-#scenario-popup.popup {
-  z-index: 9999 !important;
+#scenario-popup {
+  position: absolute;
+  z-index: 10000; /* Ensure it's above the glitch */
 }
 #streamer-setup {
   height: 100%;
@@ -491,7 +492,7 @@ html, body {
 
 /* Bookshelf */
 .bookshelf {
-  width: 80px;
+  width: 250px; /* fits 5 grapes comfortably */
   height: 120px;
   background: #deb887;
   border: 3px solid #8b5a2b;
@@ -499,28 +500,22 @@ html, body {
   top: 40px;
   right: 30px;
   border-radius: 6px;
-}
-.poster {
-  width: 60px;
-  height: 90px;
-  background: #ffcc00;
-  border: 2px solid #333;
-  position: absolute;
-  top: 30px;
-  left: 150px;
-  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding-bottom: 10px;
 }
 
-.rug {
-  width: 200px;
-  height: 60px;
-  background: radial-gradient(circle at center, #ffb6c1, #ff69b4);
-  position: absolute;
-  bottom: 20px;
-  left: 200px;
-  border-radius: 30px;
-  z-index: 0;
+.poster {
+  /* keep your existing styles */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-top: 4px;  /* nudge text down a bit */
+  line-height: 1.1;  /* tighten line spacing */
 }
+
 .obs-ui {
   width: 90%;
   height: 90%;
@@ -592,12 +587,14 @@ html, body {
 }
 
 .popup.clickable-popup::after {
-  content: "▼";
+  content: ">>";
   position: absolute;
   bottom: 6px;
   right: 12px;
   font-size: 14px;
   animation: blink 1s steps(2, start) infinite;
+  font-family: 'VT323', monospace; /* match game font */
+  animation: slideArrow 1.2s ease-in-out infinite;
 }
 @keyframes blink {
   to {
@@ -651,4 +648,186 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+}
+.viewer-chat {
+  position: absolute;
+  bottom: 8%;
+  left: 5%;
+  width: 90%;
+  font-family: 'VT323', monospace;
+  color: #00ff88;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 10px;
+  border-radius: 10px;
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-line;
+  z-index: 12;
+  line-height: 1.5;
+}
+/* === Glitch Overlay Styling === */
+#crash-glitch {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.95); /* ✅ dark enough to simulate crash */
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* ✅ Activate the overlay when crash happens */
+#crash-glitch.active {
+  opacity: 1;
+  pointer-events: auto;
+  animation: glitch-flicker 1s infinite;
+}
+
+/* ✅ Glitch animation */
+@keyframes glitch-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  10% {
+    transform: scale(1.01) skewX(-0.5deg);
+    filter: contrast(120%) brightness(120%);
+  }
+  20% {
+    transform: scale(0.99) skewY(0.5deg);
+    filter: hue-rotate(10deg);
+  }
+  30% {
+    transform: scale(1.02) skewX(1deg);
+    filter: contrast(80%);
+  }
+  40% {
+    transform: scale(0.98) skewY(-1deg);
+    filter: grayscale(1);
+  }
+  50% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+/* === Viewer Chat Styling === */
+#viewer-chat {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  max-width: 90%;
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #00ff90;
+  white-space: pre-line;
+  line-height: 1.4;
+  z-index: 10001;
+}
+
+.system-message {
+  color: #ff4d4d !important;  /* Bright red, feel free to adjust */
+  font-weight: bold;
+  font-style: italic;
+  display: block;
+  margin: 4px 0;
+}
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out;
+  pointer-events: none; /* Enabled only after typing */
+}
+
+.transition-text {
+  font-family: 'VT323', monospace;
+  font-size: 32px;
+  color: white;
+  white-space: pre-wrap;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.transition-overlay.clickable {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.transition-overlay.clickable::after {
+  content: ">>";
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  font-size: 24px;
+  color: white;
+  animation: blink 1s infinite;
+  font-family: 'VT323', monospace; /* match game font */
+  animation: slideArrow 1.2s ease-in-out infinite;
+}
+
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes slideArrow {
+  0% { transform: translateX(0); opacity: 1; }
+  50% { transform: translateX(4px); opacity: 0.8; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.5) translateY(-50px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) translateY(10px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.grape {
+  width: 40px;
+  height: 40px;
+  opacity: 0; /* Hidden by default */
+  transform: scale(0.5);
+}
+
+/* When grape is earned, show + animate it */
+.grape.show {
+  opacity: 1;
+  animation: bounceIn 0.6s ease forwards;
+}
+
+.username-display {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: #fff;
+  z-index: 15;
+  display: none;
 }
