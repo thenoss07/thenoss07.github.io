@@ -1,15 +1,21 @@
 const AUDIO = {
-  click: 'click-3.mp3',
-  flip: 'Standard Whip.mp3',
-  success: 'Success Sound Effect.mp3',
-  fail: 'Fail Sound Effect.mp3',
   bg: 'Future Design.mp3'
 };
 
 // ✅ Declare bgMusic globally and configure
 const bgMusic = new Audio(AUDIO.bg);
 bgMusic.loop = true;
-bgMusic.volume = 0.02;
+bgMusic.volume = 0.01;
+
+function playClickSound() {
+  const clickSfx = document.getElementById("click-sfx");
+  if (clickSfx) {
+    clickSfx.volume = 0.2; // 🔉 Set volume to 20%
+    clickSfx.currentTime = 0;
+    clickSfx.play();
+  }
+}
+
 
 const bgColors = [
   "#fef9c3", "#d1fae5", "#e0f2fe", "#fce7f3", "#ede9fe",
@@ -70,6 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("click", playBgMusic);
     window.addEventListener("keydown", playBgMusic);
   });
+});
+const hoverSfx = document.getElementById('hover-sfx');
+
+document.addEventListener('mouseover', (e) => {
+  if (e.target.classList.contains('choice-btn')) {
+    hoverSfx.currentTime = 0;
+    hoverSfx.play();
+  }
 });
 
 function playSound(src) {
@@ -132,7 +146,7 @@ function showStreamerSetup(message, callback) {
 
     popup.onclick = function handleClick() {
       if (popup.style.pointerEvents === "none") return;
-
+      playClickSound();
       clickCount++;
 
       if (clickCount === 1) {
@@ -165,6 +179,7 @@ function showScene3() {
   let clickCount = 0;
 
   popup.onclick = () => {
+    playClickSound();
     clickCount++;
 
     if (clickCount === 1) {
@@ -238,6 +253,7 @@ const choices = [
     typeText(btn, choice.text, 25, () => {
       btn.disabled = false;
       btn.onclick = () => {
+      playClickSound();
       buttonsContainer.classList.add('hidden');
       showOutcome(choice.outcome, showScene4, choice.chatKey); // ← add chatKey
       };
@@ -264,8 +280,11 @@ function showOutcome(outcomeObj, nextSceneCallback) {
   document.querySelectorAll('.choice-btn').forEach(btn => btn.remove());
 
   let stage = 0;
+  let isTypingChat = false;  // <-- flag to block clicks during chat typing
 
   const advance = () => {
+    if (isTypingChat) return;  // ignore clicks while chat is typing
+
     stage++;
 
     if (stage === 1) {
@@ -295,8 +314,15 @@ function showOutcome(outcomeObj, nextSceneCallback) {
         starsEarned++;
         const grape = document.getElementById(`grape-${starsEarned}`);
         if (grape) {
-          grape.classList.remove('hidden', 'show');
+          grape.classList.remove('hidden', 'show'); // just in case
           grape.classList.add('show');
+
+          const grapeSfx = document.getElementById('grape-sfx');
+          if (grapeSfx) {
+            grapeSfx.volume = 0.08; // 🔉 adjust volume here (0.0 to 1.0)
+            grapeSfx.currentTime = 0; // rewind to start
+            grapeSfx.play();
+          }
         }
       }
 
@@ -308,11 +334,29 @@ function showOutcome(outcomeObj, nextSceneCallback) {
       let i = 0;
       viewerChat.innerText = "";
 
+      const notifSound = document.getElementById('notif-sfx');
+      notifSound.volume = 0.15;
+
+      isTypingChat = true;  // block clicks while chat types
+
       function typeChatLine() {
         if (i < lines.length) {
           viewerChat.innerText += lines[i] + "\n";
+
+          notifSound.currentTime = 0;  // rewind to start
+          notifSound.play();
+
+          // Stop sound after 1 second
+          setTimeout(() => {
+            notifSound.pause();
+            notifSound.currentTime = 0;
+          }, 1000);
+
           i++;
           setTimeout(typeChatLine, 2000); // Delay between chat lines
+        } else {
+          // Done typing all chat lines — enable clicks again
+          isTypingChat = false;
         }
       }
 
@@ -328,8 +372,10 @@ function showOutcome(outcomeObj, nextSceneCallback) {
   };
 
   popup.onclick = advance;
+  playClickSound();
   advance(); // Start first step
 }
+
 
 
 function typeText(element, text, speed = 30, callback) {
@@ -337,21 +383,33 @@ function typeText(element, text, speed = 30, callback) {
   let buffer = "";
 
   element.style.pointerEvents = "none"; // Disable clicking while typing
+  const typingSfx = document.getElementById("typing-sfx");
+  if (typingSfx) {
+    typingSfx.volume = 0.05;
+    typingSfx.loop = true;
+    typingSfx.currentTime = 0;
+    typingSfx.play();
+  }
 
   function type() {
     if (index < text.length) {
       buffer += text.charAt(index);
-      element.textContent = buffer; // Use textContent to preserve spacing correctly
+      element.textContent = buffer;
       index++;
       setTimeout(type, speed);
     } else {
       element.style.pointerEvents = "auto"; // Re-enable after typing
+      if (typingSfx) {
+        typingSfx.pause();
+        typingSfx.currentTime = 0;
+      }
       if (callback) callback();
     }
   }
 
   type();
 }
+
 function showPopupWithTyping(text, callback) {
   const popup = document.getElementById('scenario-popup');
   popup.classList.remove('hidden');
@@ -360,6 +418,7 @@ function showPopupWithTyping(text, callback) {
   popup.onclick = null; // Clear existing click behavior
   typeText(popup, text, 30, () => {
     popup.onclick = () => {
+      playClickSound();
       popup.classList.add('hidden');
       popup.classList.remove('clickable-popup');
       if (callback) callback();
@@ -379,6 +438,7 @@ function transitionToScene(callback, text = "The next stream begins...") {
     overlay.classList.add('clickable');
 
     overlay.onclick = () => {
+      
       overlay.classList.remove('clickable');
       overlay.style.animation = 'fadeOut 0.8s forwards';
 
@@ -396,6 +456,21 @@ function awardStar() {
   const star = document.getElementById(`star-${starsEarned}`);
   if (star) star.classList.add('earned');
 }
+function transitionToScene8(callback) {
+  const popup = document.getElementById('scenario-popup');
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+  popup.innerText = "";
+
+  typeText(popup, "✅ Stream over. Let's see how you did...");
+
+  popup.onclick = () => {
+    playClickSound();
+    popup.classList.add('hidden');
+    popup.classList.remove('clickable-popup');
+    callback(); // call showScene8
+  };
+}
 
 
 function showScene4() {
@@ -409,6 +484,7 @@ function showScene4() {
   typeText(popup, "After your stream, someone you recently collaborated with DMs you.");
 
   popup.onclick = () => {
+    playClickSound();
     clickCount++;
 
     if (clickCount === 1) {
@@ -479,6 +555,7 @@ function showChoicesForScene4() {
     typeText(btn, choice.text, 25, () => {
       btn.disabled = false;
       btn.onclick = () => {
+      playClickSound();
         buttonsContainer.classList.add('hidden');
         showOutcome(choice.outcome, showScene5); // Placeholder for next scene
       };
@@ -496,6 +573,7 @@ function showScene5() {
   typeText(popup, "One of your top chatters, ‘MysticVoid’, DMs you after stream.");
 
   popup.onclick = () => {
+    playClickSound();
     clickCount++;
 
     if (clickCount === 1) {
@@ -571,6 +649,7 @@ function showChoicesForScene5() {
     typeText(btn, choice.text, 25, () => {
       btn.disabled = false;
       btn.onclick = () => {
+      playClickSound();
         buttonsContainer.classList.add('hidden');
         showOutcome(choice.outcome, showScene6); // or your next scene function
       };
@@ -588,6 +667,7 @@ function showScene6() {
   typeText(popup, "A fan slides into your DMs with a sweet deal… but something feels off.");
 
   popup.onclick = () => {
+    playClickSound();
     clickCount++;
 
     if (clickCount === 1) {
@@ -659,6 +739,7 @@ function showChoicesForScene6() {
     typeText(btn, choice.text, 25, () => {
       btn.disabled = false;
       btn.onclick = () => {
+      playClickSound();
         buttonsContainer.classList.add('hidden');
         showOutcome(choice.outcome, showScene7);  // Assuming you have a showScene7
         if (choice.outcome.isCorrect) {
@@ -680,6 +761,7 @@ function showScene7() {
   typeText(popup, "You’re prepping for your next stream when you see a post trending on X (formerly Twitter)...");
 
   popup.onclick = () => {
+    playClickSound();
     clickCount++;
 
     if (clickCount === 1) {
@@ -753,13 +835,91 @@ function showChoicesForScene7() {
     typeText(btn, choice.text, 25, () => {
       btn.disabled = false;
       btn.onclick = () => {
+      playClickSound();
         buttonsContainer.classList.add('hidden');
-        showOutcome(choice.outcome, endGame); // Change to next scene or end
+        showOutcome(choice.outcome, () => {
+          showClosingTransition(showScene8); // 👈 New transition before final scene
+        });
       };
     });
   });
 }
 
-function endGame() {
-  alert("Scene 8 coming soon...");
+function showClosingTransition(callback) {
+  const popup = document.getElementById('scenario-popup');
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+  popup.innerText = "";
+
+  typeText(popup, "✅ Stream complete. Let's take a look at how you did...");
+
+  // Add animated arrow if needed
+  const arrow = document.createElement('div');
+  arrow.className = 'next-arrow';
+  arrow.innerHTML = "&#10148;&#10148;"; // double right arrow
+  popup.appendChild(arrow);
+
+  popup.onclick = () => {
+    playClickSound();
+    popup.classList.add('hidden');
+    popup.classList.remove('clickable-popup');
+    callback(); // ➜ showScene8
+  };
+}
+
+
+function showScene8() {
+  const popup = document.getElementById('scenario-popup');
+  const viewerChat = document.getElementById('viewer-chat');
+  const grapeShelf = document.getElementById('grape-shelf');
+
+  // Reset screen
+  document.querySelectorAll('.choice-btn').forEach(btn => btn.remove());
+  viewerChat.classList.add('hidden');
+  popup.innerHTML = ""; // Clear previous content
+  popup.classList.remove('hidden');
+  popup.classList.add('clickable-popup');
+
+  // Grape summary container
+  const grapeSummary = document.createElement('div');
+  grapeSummary.classList.add('grape-summary');
+
+  for (let i = 1; i <= 5; i++) {
+    const grape = document.createElement('img');
+    grape.src = 'grapes-7366627_1280.png';
+    grape.classList.add('grape');
+    if (i <= starsEarned) {
+      grape.classList.add('show', 'bounce');
+    } else {
+      grape.classList.add('dimmed'); // for grapes not earned
+    }
+    grapeSummary.appendChild(grape);
+  }
+
+  // Randomised final reflection message
+  const messages = [
+    "🧠 Online harms aren’t always obvious — trust your instincts and think before you click.",
+    "🛡️ You have the power to protect your space online — your choices matter.",
+    "📱 Pause. Question. Stay sharp. The internet isn’t always what it seems.",
+    "💬 What you share, who you trust, and how you react — it all shapes your digital safety."
+  ];
+  const finalMessage = messages[Math.floor(Math.random() * messages.length)];
+
+  const scoreText = document.createElement('p');
+  scoreText.innerText = `🍇 You collected ${starsEarned} out of 5 grapes!`;
+
+  const finalNote = document.createElement('p');
+  finalNote.innerText = finalMessage;
+  finalNote.classList.add('final-note');
+
+  const replayBtn = document.createElement('button');
+  replayBtn.innerText = "Replay";
+  replayBtn.classList.add('choice-btn');
+  replayBtn.onclick = () => location.reload();
+
+  // Assemble popup
+  popup.appendChild(scoreText);
+  popup.appendChild(grapeSummary);
+  popup.appendChild(finalNote);
+  popup.appendChild(replayBtn);
 }

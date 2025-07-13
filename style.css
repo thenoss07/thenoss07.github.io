@@ -477,23 +477,10 @@ html, body {
   pointer-events: none;
 }
 
-/* Bed */
-.bed {
-  width: 100px;
-  height: 60px;
-  background: #b37070;
-  border: 3px solid #7b4a4a;
-  position: absolute;
-  bottom: 80px;
-  left: 30px;
-  border-radius: 8px;
-  z-index: 1;
-}
-
 /* Bookshelf */
 .bookshelf {
   width: 250px; /* fits 5 grapes comfortably */
-  height: 120px;
+  height: 60px;
   background: #deb887;
   border: 3px solid #8b5a2b;
   position: absolute;
@@ -830,4 +817,43 @@ html, body {
   color: #fff;
   z-index: 15;
   display: none;
+}
+.grape-summary {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.grape-summary img {
+  width: 32px;
+  height: auto;
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 0.3s;
+}
+
+.grape-summary img.dimmed {
+  opacity: 0.2;
+}
+
+.grape-summary img.bounce {
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+.final-note {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: center;
+}
+#scenario-popup .choice-btn {
+  display: block;
+  margin: 20px auto 0 auto;
 }
